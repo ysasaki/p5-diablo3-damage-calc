@@ -1,0 +1,8 @@
+d3-damage.pl
+lib/Diablo3/Damage/Calc.pm
+lib/Diablo3/Damage/Weapon.pm
+Makefile.PL
+MANIFEST			This list of files
+README.md
+t/000_weapon.t
+t/001_calc.t

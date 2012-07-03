@@ -1,0 +1,5 @@
+.*.sw*
+MYMETA.*
+Makefile
+Makefile.old
+MANIFEST.bak

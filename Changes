@@ -1,0 +1,9 @@
+Revision history for Perl extension Diablo3::Damage::Calc
+
+0.02  Tue Jul  3 15:05 2012
+    - support dual wielding
+    - moved repository to github from gist
+
+0.01  Mon Jul  2 HH:MM 2012
+	- original version
+
