@@ -1,4 +1,4 @@
-D3::Damage::Calc version 0.02
+Diablo3::Damage::Calc version 0.02
 =============================
 
 The README is used to introduce the module and provide instructions on
@@ -27,13 +27,27 @@ HOW TO USE
 
 _One Hand_
 
-    d3-damage.pl -p 1100 -cc 12.5 -cd 97 -b 15 -mi 300 -ma 700 -a 1.35 
+    $ d3-damage.pl -p 1100 -cc 12.5 -cd 97 -b 15 -mi 300 -ma 700 -a 1.35
+
+    Base Damage: 5500.00(6325.00)
+    Critical Chance: 12.50
+    Critical Damage: 10835.00(12460.25)
+    Avg: 6166.88(7091.91)
+    APS: 1.35(1.35, 0.00)
+    DPS: 8325.28(9574.07)
 
 _Dual Wielding_
 
-    d3-damage.pl -p 1200 -cc 38.5 -cd 265 -b 15 \
+    $ d3-damage.pl -p 1200 -cc 38.5 -cd 265 -b 15 \
     -mi 400 -ma 800 -a 1.20 \
-    -mi 300 -ma 700 -a 1.35 
+    -mi 300 -ma 700 -a 1.35
+
+    Base Damage: 6600.00(7590.00)
+    Critical Chance: 38.50
+    Critical Damage: 24090.00(27703.50)
+    Avg: 13333.65(15333.70)
+    APS: 1.47(1.38, 1.55)
+    DPS: 19550.46(22483.03)
 
 ABOUT FORMULA
 -------------
