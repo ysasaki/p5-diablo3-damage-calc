@@ -11,8 +11,9 @@ use Class::Accessor::Lite (
             /
     ],
 );
+use Carp ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.10';
 
 sub buffed {
     my $self = shift;
@@ -85,13 +86,88 @@ sub attack_per_second {
     return $aps, $main, $off;
 }
 
+sub as_string {
+    my $self = shift;
+
+    my @line;
+    my ( $base, $base_buffed ) = $self->base_damage;
+    push @line, sprintf "Base Damage    : %8.2f (%8.2f)", $base, $base_buffed;
+
+    my ( $critical_damage, $critical_damage_buffed ) = $self->critical_damage;
+    push @line, sprintf "Critical Chance: %8.2f", $self->critical_hit_chance;
+    push @line, sprintf "Critical Damage: %8.2f (%8.2f)", $critical_damage,
+        $critical_damage_buffed;
+
+    my ( $avg, $avg_buffed ) = $self->average_damage;
+    push @line, sprintf "Avg            : %8.2f (%8.2f)", $avg, $avg_buffed;
+
+    my ( $aps, $main_aps, $off_aps ) = $self->attack_per_second;
+    push @line, sprintf "APS            : %8.2f (%3.2f, %3.2f)", $aps, $main_aps,
+        $off_aps;
+    push @line, sprintf "DPS            : %8.2f (%8.2f)", $aps * $avg,
+        $aps * $avg_buffed;
+
+    return join "\n", @line;
+}
+
+sub as_compared_string {
+    my $self      = shift;
+    my $base_calc = shift;
+    unless ($base_calc) {
+        Carp::carp "as_compared_string is required base Calc object.";
+        return $self->as_string;
+    }
+
+    my @line;
+
+    # Base
+    my ( $base, $base_buffed ) = $self->base_damage;
+    my ($base_c) = $base_calc->base_damage;
+    push @line, sprintf "Base Damage    : %8.2f (%8.2f)   %6.2f%%",
+        $base, $base_buffed, _per( $base, $base_c );
+
+    # Critical
+    my ( $critical_damage, $critical_damage_buffed ) = $self->critical_damage;
+    my ($critical_damage_c) = $base_calc->critical_damage;
+    push @line, sprintf "Critical Chance: %8.2f              %6.2f%%",
+        $self->critical_hit_chance,
+        _per( $self->critical_hit_chance, $base_calc->critical_hit_chance );
+
+    push @line, sprintf "Critical Damage: %8.2f (%8.2f)   %6.2f%%",
+        $critical_damage,
+        $critical_damage_buffed, _per( $critical_damage, $critical_damage_c );
+
+    # AVG
+    my ( $avg, $avg_buffed ) = $self->average_damage;
+    my ($avg_c) = $base_calc->average_damage;
+    push @line, sprintf "Avg            : %8.2f (%8.2f)   %6.2f%%", $avg,
+        $avg_buffed, _per( $avg, $avg_c );
+
+    # APS, DPS
+    my ( $aps,   $main_aps,   $off_aps )   = $self->attack_per_second;
+    my ( $aps_c, $main_aps_c, $off_aps_c ) = $base_calc->attack_per_second;
+    push @line,
+        sprintf
+        "APS            : %8.2f (%3.2f, %3.2f) %6.2f%% (%6.2f%%, %6.2f%%)",
+        $aps, $main_aps, $off_aps,
+        _per( $aps, $aps_c ), _per( $main_aps, $main_aps_c ),
+        _per( $off_aps, $off_aps_c );
+
+    push @line, sprintf "DPS            : %8.2f (%8.2f)   %6.2f%%", $aps * $avg,
+        $aps * $avg_buffed, _per( $aps * $avg, $aps_c * $avg_c );
+
+    return join "\n", @line;
+}
+
+sub _per { 100 * (($_[0]/$_[1]) - 1)}
+
 =head1 NAME
 
 Diablo3::Damage::Cacl - Perl extention for calculating damages of Diablo3
 
 =head1 SYNOPSIS
 
-See C<d3-damage.pl --help>
+See C<d3-damage.pl --help> or C<d3-damage-compare.pl --help>
 
 =head1 AUTHOR
 

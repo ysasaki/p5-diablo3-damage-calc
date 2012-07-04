@@ -48,20 +48,7 @@ my $calc = Diablo3::Damage::Calc->new(
         qw/primary_stat critical_hit_chance critical_hit_damage buff/
 );
 
-my ( $base, $base_buffed ) = $calc->base_damage;
-printf "Base Damage: %.2f(%.2f)\n", $base, $base_buffed;
-
-my ( $critical_damage, $critical_damage_buffed ) = $calc->critical_damage;
-printf "Critical Chance: %.2f\n",       $calc->critical_hit_chance;
-printf "Critical Damage: %.2f(%.2f)\n", $critical_damage,
-    $critical_damage_buffed;
-
-my ( $avg, $avg_buffed ) = $calc->average_damage;
-printf "Avg: %.2f(%.2f)\n", $avg, $avg_buffed;
-
-my ( $aps, $main_aps, $off_aps ) = $calc->attack_per_second;
-printf "APS: %.2f(%0.2f, %.2f)\n", $aps, $main_aps, $off_aps;
-printf "DPS: %.2f(%.2f)\n", $aps * $avg, $aps * $avg_buffed;
+print $calc->as_string, "\n";
 
 =head1 SYNOPSIS
 

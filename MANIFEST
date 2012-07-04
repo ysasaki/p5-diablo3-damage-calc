@@ -1,4 +1,7 @@
+Changes
+d3-damage-compare.pl
 d3-damage.pl
+example/compare-config
 lib/Diablo3/Damage/Calc.pm
 lib/Diablo3/Damage/Weapon.pm
 Makefile.PL

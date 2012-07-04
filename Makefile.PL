@@ -5,7 +5,7 @@ WriteMakefile(
     VERSION_FROM  => 'lib/Diablo3/Damage/Calc.pm',
     AUTHOR        => 'Yoshihiro Sasaki <ysasaki at cpan.org>',
     PREREQ_PM     => { 'Class::Accessor::Lite' => 0 },
-    EXE_FILES     => ['d3-damage.pl'],
+    EXE_FILES     => ['d3-damage.pl', 'd3-damage-compare.pl'],
     LICENSE       => 'perl',
     META_MERGE => {
         resources => {
