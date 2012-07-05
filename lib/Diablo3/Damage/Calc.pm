@@ -14,7 +14,7 @@ use Class::Accessor::Lite (
 );
 use Carp ();
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 sub buffed {
     my $self = shift;

@@ -1,4 +1,4 @@
-Diablo3::Damage::Calc version 0.11
+Diablo3::Damage::Calc version 0.12
 ==================================
 
 INSTALLATION
@@ -49,6 +49,8 @@ First, you need to write a configuration file like below.
     -p 1200 -cc 38.5 -cd 265 -b 15 -ias 7.5 -mi 400 -ma 800 -a 1.20 -mi 300 -ma 700 -a 1.35
     -p 1200 -cc 42.5 -cd 265 -b 15 -ias 7.5 -mi 600 -ma 800 -a 1.20 -mi 300 -ma 700 -a 1.35
     -p 1250 -cc 38.5 -cd 305 -b 15 -ias 0   -mi 400 -ma 800 -a 1.20 -mi 350 -ma 750 -a 1.20
+    # add support for one-line comments beginning with #
+    #-p 1250 -cc 48.5 -cd 165 -b 30 -ias 16  -mi 400 -ma 800 -a 1.20
     -p 1250 -cc 48.5 -cd 165 -b 15 -ias 16  -mi 400 -ma 800 -a 1.53
 
 
