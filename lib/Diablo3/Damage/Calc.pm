@@ -7,13 +7,14 @@ use Class::Accessor::Lite (
     ro  => [
         qw/
             main_weapon off_hand primary_stat
-            critical_hit_chance critical_hit_damage buff
+            critical_hit_chance critical_hit_damage
+            increase_attack_speed buff
             /
     ],
 );
 use Carp ();
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 sub buffed {
     my $self = shift;
@@ -70,12 +71,15 @@ sub attack_per_second {
 
     my $main
         = $is_dual
-        ? $self->main_weapon->attack_speed * 1.15
-        : $self->main_weapon->attack_speed;
+        ? $self->main_weapon->attack_speed
+        * ( 1 + 0.15 + $self->increase_attack_speed / 100 )
+        : $self->main_weapon->attack_speed
+        * ( 1 + $self->increase_attack_speed / 100 );
 
     my $off
         = $is_dual
-        ? $self->off_hand->attack_speed * 1.15
+        ? $self->off_hand->attack_speed
+        * ( 1 + 0.15 + $self->increase_attack_speed / 100 )
         : 0;
 
     my $aps
@@ -163,7 +167,7 @@ sub _per { 100 * (($_[0]/$_[1]) - 1)}
 
 =head1 NAME
 
-Diablo3::Damage::Cacl - Perl extention for calculating damages of Diablo3
+Diablo3::Damage::Calc - Perl extention for calculating damages of Diablo3
 
 =head1 SYNOPSIS
 

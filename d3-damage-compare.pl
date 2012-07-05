@@ -57,7 +57,8 @@ sub create_calc_from_config {
             \my %o,                     'min|mi=i@',
             'max|ma=i@',                'primary_stat|p=i',
             'critical_hit_chance|cc=f', 'critical_hit_damage|cd=i',
-            'attack_speed|a=f@',        'buff|b=f',
+            'attack_speed|a=f@',        'increase_attack_speed|ias=f',
+            'buff|b=f',
         );
 
         if ( !$ret ) {
@@ -76,9 +77,10 @@ sub create_calc_from_config {
             }
         }
 
-        $o{critical_hit_chance} //= 5;
-        $o{critical_hit_damage} //= 50;
-        $o{buff}                //= 0;
+        $o{critical_hit_chance}   //= 5;
+        $o{critical_hit_damage}   //= 50;
+        $o{increase_attack_speed} //= 0;
+        $o{buff}                  //= 0;
 
         my $calc = Diablo3::Damage::Calc->new(
             main_weapon => Diablo3::Damage::Weapon->new(
@@ -88,9 +90,11 @@ sub create_calc_from_config {
                 map { $_ => $o{$_}->[1] } qw/min max attack_speed/
             ),
             map { $_ => $o{$_} }
-                qw/primary_stat critical_hit_chance critical_hit_damage buff/
+                qw/primary_stat critical_hit_chance critical_hit_damage
+                increase_attack_speed buff/
         );
 
+        # FIXME
         $calc->{_args} = $args;
 
         $i++;
@@ -108,57 +112,56 @@ d3-damage-compare.pl
 
     --help | -h
 
-=head2 CONFIG 
+=head2 CONFIG
 
 Write configurations per line.
 
     $ cat my-barb-config
-    -p 1200 -cc 38.5 -cd 265 -b 15 -mi 400 -ma 800 -a 1.20 -mi 300 -ma 700 -a 1.35 
-    -p 1200 -cc 42.5 -cd 265 -b 15 -mi 600 -ma 800 -a 1.20 -mi 300 -ma 700 -a 1.35 
-    -p 1250 -cc 38.5 -cd 305 -b 15 -mi 400 -ma 800 -a 1.20 -mi 350 -ma 750 -a 1.20
-    -p 1250 -cc 48.5 -cd 165 -b 15 -mi 400 -ma 800 -a 1.53
+    -p 1200 -cc 38.5 -cd 265 -b 15 -ias 7.5 -mi 400 -ma 800 -a 1.20 -mi 300 -ma 700 -a 1.35
+    -p 1200 -cc 42.5 -cd 265 -b 15 -ias 7.5 -mi 600 -ma 800 -a 1.20 -mi 300 -ma 700 -a 1.35
+    -p 1250 -cc 38.5 -cd 305 -b 15 -ias 0   -mi 400 -ma 800 -a 1.20 -mi 350 -ma 750 -a 1.20
+    -p 1250 -cc 48.5 -cd 165 -b 15 -ias 16  -mi 400 -ma 800 -a 1.53
 
 =head2 Example
 
     d3-damage-diff.pl -f my-barb-config
     ==============================================================================
-    -p 1200 -cc 38.5 -cd 265 -b 15 -mi 400 -ma 800 -a 1.20 -mi 300 -ma 700 -a 1.35
+    -p 1200 -cc 38.5 -cd 265 -b 15 -ias 7.5 -mi 400 -ma 800 -a 1.20 -mi 300 -ma 700 -a 1.35
     ==============================================================================
     Base Damage    :  6600.00 ( 7590.00)
     Critical Chance:    38.50
     Critical Damage: 24090.00 (27703.50)
     Avg            : 13333.65 (15333.70)
-    APS            :     1.47 (1.38, 1.55)
-    DPS            : 19550.46 (22483.03)
+    APS            :     1.56 (1.47, 1.65)
+    DPS            : 20825.49 (23949.32)
 
     ==============================================================================
-    -p 1200 -cc 42.5 -cd 265 -b 15 -mi 600 -ma 800 -a 1.20 -mi 300 -ma 700 -a 1.35
+    -p 1200 -cc 42.5 -cd 265 -b 15 -ias 7.5 -mi 600 -ma 800 -a 1.20 -mi 300 -ma 700 -a 1.35
     ==============================================================================
     Base Damage    :  7200.00 ( 8280.00)     9.09%
     Critical Chance:    42.50               10.39%
     Critical Damage: 26280.00 (30222.00)     9.09%
     Avg            : 15309.00 (17605.35)    14.81%
-    APS            :     1.47 (1.38, 1.55)   0.00% (  0.00%,   0.00%)
-    DPS            : 22446.82 (25813.84)    14.81%
+    APS            :     1.56 (1.47, 1.65)   0.00% (  0.00%,   0.00%)
+    DPS            : 23910.74 (27497.36)    14.81%
 
     ==============================================================================
-    -p 1250 -cc 38.5 -cd 305 -b 15 -mi 400 -ma 800 -a 1.20 -mi 350 -ma 750 -a 1.20
+    -p 1250 -cc 38.5 -cd 305 -b 15 -ias 0   -mi 400 -ma 800 -a 1.20 -mi 350 -ma 750 -a 1.20
     ==============================================================================
     Base Damage    :  7187.50 ( 8265.62)     8.90%
     Critical Chance:    38.50                0.00%
     Critical Damage: 29109.38 (33475.78)    20.84%
     Avg            : 15627.42 (17971.54)    17.20%
-    APS            :     1.38 (1.38, 1.38)  -5.88% (  0.00%, -11.11%)
-    DPS            : 21565.84 (24800.72)    10.31%
+    APS            :     1.38 (1.38, 1.38) -11.64% ( -6.12%, -16.55%)
+    DPS            : 21565.84 (24800.72)     3.56%
 
     ==============================================================================
-    -p 1250 -cc 48.5 -cd 165 -b 15 -mi 400 -ma 800 -a 1.53
+    -p 1250 -cc 48.5 -cd 165 -b 15 -ias 16  -mi 400 -ma 800 -a 1.53
     ==============================================================================
     Base Damage    :  7500.00 ( 8625.00)    13.64%
     Critical Chance:    48.50               25.97%
     Critical Damage: 19875.00 (22856.25)   -17.50%
     Avg            : 13501.88 (15527.16)     1.26%
-    APS            :     1.53 (1.53, 0.00)   4.35% ( 10.87%, -100.00%)
-    DPS            : 20657.87 (23756.55)     5.66%
-
+    APS            :     1.77 (1.77, 0.00)  13.63% ( 20.73%, -100.00%)
+    DPS            : 23963.13 (27557.60)    15.07%
 =cut

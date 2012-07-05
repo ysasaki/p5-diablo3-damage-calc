@@ -11,8 +11,8 @@ my $ret = GetOptions(
     \my %o,                     'min|mi=i@',
     'max|ma=i@',                'primary_stat|p=i',
     'critical_hit_chance|cc=f', 'critical_hit_damage|cd=i',
-    'attack_speed|a=f@',        'buff|b=f',
-    'help|h',
+    'attack_speed|a=f@',        'increase_attack_speed|ias=f',
+    'buff|b=f',                 'help|h',
 );
 
 if ( $o{help} or !$ret ) {
@@ -33,9 +33,10 @@ for (qw(primary_stat)) {
     }
 }
 
-$o{critical_hit_chance} //= 5;
-$o{critical_hit_damage} //= 50;
-$o{buff}                //= 0;
+$o{critical_hit_chance}   //= 5;
+$o{critical_hit_damage}   //= 50;
+$o{increase_attack_speed} //= 0;
+$o{buff}                  //= 0;
 
 my $calc = Diablo3::Damage::Calc->new(
     main_weapon => Diablo3::Damage::Weapon->new(
@@ -45,7 +46,8 @@ my $calc = Diablo3::Damage::Calc->new(
         map { $_ => $o{$_}->[1] } qw/min max attack_speed/
     ),
     map { $_ => $o{$_} }
-        qw/primary_stat critical_hit_chance critical_hit_damage buff/
+        qw/primary_stat critical_hit_chance critical_hit_damage
+        increase_attack_speed buff/
 );
 
 print $calc->as_string, "\n";
@@ -68,6 +70,9 @@ d3-damage.pl
     --critical_hit_damage | -cd
         default 50
 
+    --increase_attack_speed | -ias
+        sum of percentage of non-weapon gears. default 0%.
+
     --buff | -b
         default 0
 
@@ -77,40 +82,14 @@ d3-damage.pl
 
 =item One Hand
 
-    d3-damage.pl -p 1100 -cc 12.5 -cd 97 -b 15 -mi 300 -ma 700 -a 1.35 
+    d3-damage.pl -p 1100 -cc 12.5 -cd 97 -b 15 -ias 7.5 -mi 300 -ma 700 -a 1.35 
 
 =item Dual Wielding
 
-    d3-damage.pl -p 1200 -cc 38.5 -cd 265 -b 15 \
+    d3-damage.pl -p 1200 -cc 38.5 -cd 265 -b 15 -ab 7.5 \
     -mi 400 -ma 800 -a 1.20 \
     -mi 300 -ma 700 -a 1.35 
 
 =back
 
 =cut
-
-__END__
-http://gaming.stackexchange.com/questions/71589/calculating-dual-wield-character-dps
-(
-    (1 + passive skill boosts)
-    (Weapon 1 average damage +
-        ((minimum damage bonus + maximum damage bonus)/2))
-    (Weapon Damage Multipliers)
-    (Attack Spee)
-    (1 + ( crit% * crit damage %))
-    ( 1 + (main stat / 100))
-    (average attack speed of both weapons / weapon 1 attack speed) +
-
-    (1 + passive skill boosts)
-    (Weapon 2 average damage +
-        ((minimum damage bonus + maximum damage bonus)/2))
-    (Weapon Damage Multipliers)
-    (Attack Speed)
-    (1 + ( crit% * crit damage %))
-    ( 1 + (main stat / 100))
-    (average attack speed of both weapons / weapon 2 attack speed)
-) * 0.575
-
-0.575 = Dual Wielding Bonus Attack Speed / 2
-Dual Wielding Bonus Attack Speed = 1.15
-
