@@ -1,5 +1,8 @@
 Revision history for Perl extension Diablo3::Damage::Calc
 
+0.13  Fri Jul 13 02:04 2012
+    - fix bug: division by zero
+
 0.12  Thu Jul  5 16:30 2012
     - add support for one-line comments beginning with #
 

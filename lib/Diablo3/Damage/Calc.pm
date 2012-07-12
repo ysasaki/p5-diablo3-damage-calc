@@ -14,7 +14,7 @@ use Class::Accessor::Lite (
 );
 use Carp ();
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 sub buffed {
     my $self = shift;
@@ -163,7 +163,11 @@ sub as_compared_string {
     return join "\n", @line;
 }
 
-sub _per { 100 * (($_[0]/$_[1]) - 1)}
+sub _per {
+    return 0 unless $_[1];
+    100 * (($_[0]/$_[1]) - 1)
+}
+
 
 =head1 NAME
 
